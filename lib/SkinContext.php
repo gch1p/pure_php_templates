@@ -28,8 +28,12 @@ class SkinContext {
                 continue; // skip $ctx
 
             $key = $plain_args ? $n-1 : $param->name;
-            if (!$plain_args && !array_key_exists($param->name, $arguments))
-                throw new InvalidArgumentException('argument '.$param->name.' not found');
+            if (!$plain_args && !array_key_exists($param->name, $arguments)) {
+                if (!$param->isDefaultValueAvailable())
+                    throw new InvalidArgumentException('argument '.$param->name.' not found');
+                else
+                    continue;
+            }
 
             if (is_string($arguments[$key]) || $arguments[$key] instanceof SkinString) {
                 if (is_string($arguments[$key]))
